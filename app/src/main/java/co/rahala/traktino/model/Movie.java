@@ -1,7 +1,4 @@
-package co.rahala.traktino.data;
-
-import java.util.ArrayList;
-import java.util.List;
+package co.rahala.traktino.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

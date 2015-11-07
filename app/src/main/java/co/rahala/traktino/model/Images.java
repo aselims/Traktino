@@ -1,4 +1,4 @@
-package co.rahala.traktino.data;
+package co.rahala.traktino.model;
 
 /**
  * Created by aselims on 05/11/15.
