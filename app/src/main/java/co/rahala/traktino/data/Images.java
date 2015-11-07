@@ -36,7 +36,7 @@ public class Images {
         return poster;
     }
 
-    class Poster {
+    private class Poster {
         /* @SerializedName("full")
          @Expose
          private String full;

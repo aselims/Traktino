@@ -19,14 +19,14 @@ public class Movie {
     private Integer year;
     /*@SerializedName("ids")
     @Expose
-    private Ids ids;*/
+    private Ids ids;
     @SerializedName("tagline")
     @Expose
-    private String tagline;
+    private String tagline;*/
     @SerializedName("overview")
     @Expose
     private String overview;
-    @SerializedName("released")
+   /* @SerializedName("released")
     @Expose
     private String released;
     @SerializedName("runtime")
@@ -59,7 +59,7 @@ public class Movie {
     @SerializedName("certification")
     @Expose
     private String certification;
-    @SerializedName("images")
+   */ @SerializedName("images")
     @Expose
     private Images images;
 
