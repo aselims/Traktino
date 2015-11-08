@@ -70,7 +70,7 @@ public class TopTenPresenter implements TopTenContract.UserActionsListener {
 
             @Override
             public void onFailure(Throwable t) {
-                t.printStackTrace();
+                toptenView.showError(t.getMessage());
 
             }
         });

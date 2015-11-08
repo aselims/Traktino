@@ -15,6 +15,8 @@ public interface TopTenContract {
 
         void showTopTen(List<Movie> movies);
 
+        void showError(String msg);
+
     }
 
     interface UserActionsListener {

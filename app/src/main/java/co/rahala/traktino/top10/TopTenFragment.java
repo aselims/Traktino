@@ -100,6 +100,11 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
         moviesAdapter.replaceData(movies);
     }
 
+    @Override
+    public void showError(String msg) {
+        Snackbar.make(getView(), msg, Snackbar.LENGTH_LONG).show();
+    }
+
     private class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
 
         private List<Movie> mMovies;
