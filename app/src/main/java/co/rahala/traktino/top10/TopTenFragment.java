@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,6 +137,13 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
             viewHolder.overviewTextView.setText(movie.getOverview());
             viewHolder.yearTextView.setText(String.valueOf(movie.getYear()));
             //ToDo iv
+            Glide.with(TopTenFragment.this)
+                    .load(movie.getImages().getPoster().getThumb())
+                    .fitCenter()
+                    .override(400, 500)
+                    .centerCrop()
+                    .crossFade()
+                    .into(viewHolder.imageView);
 
             if(position == mMovies.size() - 2) {
                 userActionsListener.loadShows(false);

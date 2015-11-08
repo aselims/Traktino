@@ -36,22 +36,5 @@ public class Images {
         return poster;
     }
 
-    private class Poster {
-        /* @SerializedName("full")
-         @Expose
-         private String full;
-         @SerializedName("medium")
-         @Expose
-         private String medium;
-        */
-
-        @SerializedName("thumb")
-        @Expose
-        private String thumb;
-
-        public String getThumb() {
-            return thumb;
-        }
-    }
 
 }
