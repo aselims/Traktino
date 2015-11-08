@@ -141,7 +141,6 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
                     .load(movie.getImages().getPoster().getThumb())
                     .fitCenter()
                     .override(400, 500)
-                    .centerCrop()
                     .crossFade()
                     .into(viewHolder.imageView);
 
