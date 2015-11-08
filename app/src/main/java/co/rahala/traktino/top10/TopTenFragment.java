@@ -1,6 +1,7 @@
 package co.rahala.traktino.top10;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -132,6 +133,7 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
 
             if(position == mMovies.size() - 2) {
                 userActionsListener.loadShows(false);
+                Snackbar.make(getView(), "Loading more...", Snackbar.LENGTH_SHORT).show();
                 Log.d(TAG, "load 10 more");
             }
         }
