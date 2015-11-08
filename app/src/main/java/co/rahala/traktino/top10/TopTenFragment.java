@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import co.rahala.traktino.model.Movie;
 
 public class TopTenFragment extends Fragment implements TopTenContract.View {
 
+    private static final String TAG = TopTenFragment.class.getSimpleName();
     TopTenContract.UserActionsListener userActionsListener;
     MoviesAdapter moviesAdapter;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -97,12 +99,18 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
         moviesAdapter.replaceData(movies);
     }
 
-    private static class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
+    private class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
 
         private List<Movie> mMovies;
+        boolean loading = false;
+
 
         public MoviesAdapter(List<Movie> Movies) {
             mMovies = Movies;
+        }
+
+        public List<Movie> getmMovies() {
+            return mMovies;
         }
 
         @Override
@@ -121,6 +129,11 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
             viewHolder.overviewTextView.setText(movie.getOverview());
             viewHolder.yearTextView.setText(String.valueOf(movie.getYear()));
             //ToDo iv
+
+            if(position == mMovies.size() - 2) {
+                userActionsListener.loadShows(false);
+                Log.d(TAG, "load 10 more");
+            }
         }
 
         public void replaceData(List<Movie> movies) {

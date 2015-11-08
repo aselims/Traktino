@@ -3,6 +3,7 @@ package co.rahala.traktino.top10;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import co.rahala.traktino.api.TraktClient;
@@ -20,29 +21,50 @@ public class TopTenPresenter implements TopTenContract.UserActionsListener {
     private TopTenContract.View toptenView;
     //private TraktClient traktClient; should be injected
 
+    List<Movie> movieList;
+    private static int currentPage = 1;
+    private static int pages;
+
+
     public TopTenPresenter(TopTenContract.View toptenView) {
         this.toptenView = toptenView;
+        movieList = new ArrayList<>();
         // this.traktClient = traktClient;
     }
 
     /**
      * could not make complete separation of concerns
+     *
+     * @param refresh
      */
     @Override
-    public void loadShows(boolean refresh) {
-        Call<List<Movie>> moviesCall = TraktClient.getTracktService().getMovies("1");
-       /* if (refresh) {
-            moviesCall = TraktClient.getTracktService().getMovies("1");
+    public void loadShows(final boolean refresh) {
+        final Call<List<Movie>> moviesCall;
+
+        if (refresh) {
+            currentPage = 1;
         } else {
-           // moviesCall = TraktClient.getTracktService().getMovies(String.valueOf(page));
+            if (currentPage < pages){
+                currentPage++;
+            }
         }
-        // Call<List<Movie>> moviesCall = traktClient.
-       */ moviesCall.enqueue(new Callback<List<Movie>>() {
+        moviesCall = TraktClient.getTracktService().getMovies(String.valueOf(currentPage));
+
+        moviesCall.enqueue(new Callback<List<Movie>>() {
             @Override
             public void onResponse(Response<List<Movie>> response, Retrofit retrofit) {
 
                 Log.d("retrofit_responseCode", String.valueOf(response.code()));
-                toptenView.showTopTen(response.body());
+                pages = Integer.parseInt(response.headers().values("x-pagination-page-count").get(0));
+                currentPage = Integer.parseInt(response.headers().values("x-pagination-page").get(0));
+
+                if(refresh){
+                    movieList.clear();
+                    movieList = response.body();
+                }else {
+                    movieList.addAll(response.body());
+                }
+                toptenView.showTopTen(movieList);
                 toptenView.setProgressIndicator(false);
             }
 
@@ -53,4 +75,7 @@ public class TopTenPresenter implements TopTenContract.UserActionsListener {
             }
         });
     }
+
+
+
 }
