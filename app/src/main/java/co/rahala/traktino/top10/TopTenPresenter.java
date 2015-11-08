@@ -33,7 +33,7 @@ public class TopTenPresenter implements TopTenContract.UserActionsListener {
     }
 
     /**
-     * could not make complete separation of concerns
+     * This can be moved to the client "Architecture decision"
      *
      * @param refresh
      */

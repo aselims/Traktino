@@ -23,5 +23,6 @@ public interface TraktService {
     @GET("/movies/popular?extended=full,images")
     Call<List<Movie>> getMovies(@Query("page") String page);
 
+
 }
 
