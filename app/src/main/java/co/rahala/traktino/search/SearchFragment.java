@@ -1,17 +1,14 @@
-package co.rahala.traktino.top10;
+package co.rahala.traktino.search;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,22 +24,23 @@ import java.util.List;
 
 import co.rahala.traktino.R;
 import co.rahala.traktino.model.Movie;
+import co.rahala.traktino.model.SearchType;
 
 
-public class TopTenFragment extends Fragment implements TopTenContract.View {
+public class SearchFragment extends Fragment implements SearchContract.View {
 
-    private static final String TAG = TopTenFragment.class.getSimpleName();
-    TopTenContract.UserActionsListener userActionsListener;
-    MoviesAdapter moviesAdapter;
+    private static final String TAG = SearchFragment.class.getSimpleName();
+    SearchContract.UserActionsListener userActionsListener;
+    SearchAdapter searchAdapter;
     SwipeRefreshLayout swipeRefreshLayout;
 
-    public TopTenFragment() {
+    public SearchFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        moviesAdapter = new MoviesAdapter(new ArrayList<Movie>());
+        searchAdapter = new SearchAdapter(new ArrayList<SearchType>());
 
     }
 
@@ -50,14 +48,14 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        userActionsListener = new TopTenPresenter(this);
+        userActionsListener = new SearchPresenter(this);
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        userActionsListener.loadShows(true);
+       // userActionsListener.loadShows(true);
 
     }
 
@@ -66,7 +64,7 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_top_ten, container, false);
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.movies_list);
-        recyclerView.setAdapter(moviesAdapter);
+        recyclerView.setAdapter(searchAdapter);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -93,7 +91,6 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
             return;
         }
 
-        // Make sure setRefreshing() is called after the layout is done with everything else.
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -103,8 +100,8 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
     }
 
     @Override
-    public void showTopTen(List<Movie> movies) {
-        moviesAdapter.replaceData(movies);
+    public void showTen(List<SearchType> searchTypes) {
+        searchAdapter.replaceData(searchTypes);
     }
 
     @Override
@@ -112,19 +109,33 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
         Snackbar.make(getView(), msg, Snackbar.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        //inflater.inflate(R.menu.menu_main, menu);
 
-    private class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
+    }
 
-        private List<Movie> mMovies;
+
+    @Override
+    public void setKeyword(String s) {
+            userActionsListener.loadSearch(s);
+
+    }
+
+
+     private class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
+
+        private List<SearchType> searchTypes;
         boolean loading = false;
 
 
-        public MoviesAdapter(List<Movie> Movies) {
-            mMovies = Movies;
+        public SearchAdapter(ArrayList<SearchType> searchTypes) {
+            this.searchTypes = searchTypes;
         }
 
-        public List<Movie> getmMovies() {
-            return mMovies;
+        public List<SearchType> getSearchTypes() {
+            return searchTypes;
         }
 
         @Override
@@ -137,39 +148,39 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
 
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, int position) {
-            Movie movie = mMovies.get(position);
+            Movie movie = searchTypes.get(position).getMovie();
 
             viewHolder.titleTextView.setText(movie.getTitle());
             viewHolder.overviewTextView.setText(movie.getOverview());
             viewHolder.yearTextView.setText(String.valueOf(movie.getYear()));
             //ToDo iv
-            Glide.with(TopTenFragment.this)
+            Glide.with(SearchFragment.this)
                     .load(movie.getImages().getPoster().getThumb())
                     .fitCenter()
                     .override(400, 500)
                     .crossFade()
                     .into(viewHolder.imageView);
 
-           /* if (position == mMovies.size() - 2) {
+           /* if (position == searchTypes.size() - 2) {
                 userActionsListener.loadShows(false);
                 Snackbar.make(getView(), "Loading more...", Snackbar.LENGTH_SHORT).show();
                 Log.d(TAG, "load 10 more");
             }*/
         }
 
-        public void replaceData(List<Movie> movies) {
-            mMovies = movies;
+        public void replaceData(List<SearchType> searchTypes) {
+            this.searchTypes = searchTypes;
             notifyDataSetChanged();
         }
 
 
         @Override
         public int getItemCount() {
-            return mMovies.size();
+            return searchTypes.size();
         }
 
-        public Movie getItem(int position) {
-            return mMovies.get(position);
+        public SearchType getItem(int position) {
+            return searchTypes.get(position);
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {

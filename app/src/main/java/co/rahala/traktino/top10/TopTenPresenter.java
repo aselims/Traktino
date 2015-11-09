@@ -8,6 +8,7 @@ import java.util.List;
 
 import co.rahala.traktino.api.TraktClient;
 import co.rahala.traktino.model.Movie;
+import co.rahala.traktino.model.SearchType;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -76,6 +77,12 @@ public class TopTenPresenter implements TopTenContract.UserActionsListener {
         });
     }
 
+    @Override
+    public void loadSearch(String query) {
+        Call<List<SearchType>> result = TraktClient.getTracktService().getSearchResults(query);
+
+
+    }
 
 
 }
