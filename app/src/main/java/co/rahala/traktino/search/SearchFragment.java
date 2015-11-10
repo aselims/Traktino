@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,7 +33,8 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     private static final String TAG = SearchFragment.class.getSimpleName();
     SearchContract.UserActionsListener userActionsListener;
     SearchAdapter searchAdapter;
-    SwipeRefreshLayout swipeRefreshLayout;
+    private String query;
+    private RecyclerView recyclerView;
 
     public SearchFragment() {
     }
@@ -55,7 +57,6 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     @Override
     public void onResume() {
         super.onResume();
-       // userActionsListener.loadShows(true);
 
     }
 
@@ -63,24 +64,11 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_top_ten, container, false);
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.movies_list);
+        recyclerView = (RecyclerView) root.findViewById(R.id.movies_list);
         recyclerView.setAdapter(searchAdapter);
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        swipeRefreshLayout =
-                (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
-        swipeRefreshLayout.setColorSchemeColors(
-                ContextCompat.getColor(getActivity(), R.color.colorPrimary),
-                ContextCompat.getColor(getActivity(), R.color.colorAccent),
-                ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark));
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                userActionsListener.loadShows(true);
-            }
-        });
         return root;
     }
 
@@ -91,16 +79,11 @@ public class SearchFragment extends Fragment implements SearchContract.View {
             return;
         }
 
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(active);
-            }
-        });
+
     }
 
     @Override
-    public void showTen(List<SearchType> searchTypes) {
+    public void showSearchItems(List<SearchType> searchTypes) {
         searchAdapter.replaceData(searchTypes);
     }
 
@@ -119,12 +102,14 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 
     @Override
     public void setKeyword(String s) {
-            userActionsListener.loadSearch(s);
+        this.query = s;
+        userActionsListener.loadSearch(s, false);
+        recyclerView.scrollToPosition(0);
 
     }
 
 
-     private class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
+    private class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
         private List<SearchType> searchTypes;
         boolean loading = false;
@@ -161,11 +146,11 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                     .crossFade()
                     .into(viewHolder.imageView);
 
-           /* if (position == searchTypes.size() - 2) {
-                userActionsListener.loadShows(false);
+            if (position == searchTypes.size() - 2) {
+                userActionsListener.loadSearch(query, true);
                 Snackbar.make(getView(), "Loading more...", Snackbar.LENGTH_SHORT).show();
                 Log.d(TAG, "load 10 more");
-            }*/
+            }
         }
 
         public void replaceData(List<SearchType> searchTypes) {
