@@ -69,6 +69,10 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        SwipeRefreshLayout swipeRefreshLayout =
+                (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
+        swipeRefreshLayout.setEnabled(false);
+
         return root;
     }
 
