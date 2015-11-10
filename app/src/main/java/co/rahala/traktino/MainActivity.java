@@ -12,12 +12,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import co.rahala.traktino.search.SearchContract;
 import co.rahala.traktino.search.SearchFragment;
 import co.rahala.traktino.top10.TopTenFragment;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String TOPTEN_FRAGMENT = "topten";
     SearchContract.View searchView;
 
     @Override
@@ -29,10 +31,10 @@ public class MainActivity extends AppCompatActivity {
         searchView = new SearchFragment();
 
 
-        if (getSupportFragmentManager().findFragmentById(android.R.id.content) == null) {
+        if (getSupportFragmentManager().findFragmentById(R.id.container) == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container,
-                            new TopTenFragment()).commit();
+                            new TopTenFragment(), TOPTEN_FRAGMENT).commit();
         }
 
     }
@@ -41,18 +43,28 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        SearchView view = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
-        view.setOnCloseListener(new SearchView.OnCloseListener() {
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView view = (SearchView) MenuItemCompat.getActionView(item);
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
             @Override
-            public boolean onClose() {
-                if (getSupportFragmentManager().findFragmentById(R.id.container) == null) {
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                getSupportFragmentManager().popBackStack();
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                if (getSupportFragmentManager().findFragmentById(android.R.id.content) == null) {
                     getSupportFragmentManager().beginTransaction()
-                            .add(R.id.container,
-                                    new TopTenFragment()).commit();
+                            .replace(R.id.container, (Fragment) searchView)
+                            .addToBackStack(null)
+                            .commit();
                 }
-                return false;
+                return true;
             }
         });
+
         view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -79,15 +91,15 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
+       /* if (id == R.id.action_search) {
             if (getSupportFragmentManager().findFragmentById(android.R.id.content) == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, (Fragment) searchView)
+                        .add(R.id.container, (Fragment) searchView)
                         .commit();
             }
             return true;
         }
-
+*/
         return super.onOptionsItemSelected(item);
     }
 }
