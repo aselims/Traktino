@@ -63,6 +63,8 @@ public class TopTenPresenter implements TopTenContract.UserActionsListener {
                     movieList.clear();
                     movieList = response.body();
                 }else {
+                    //Which is better? pass a new list with all items to the adapter
+                    // or only the new fetched and add them to the list of the adapter?
                     movieList.addAll(response.body());
                 }
                 toptenView.showTopTen(movieList);

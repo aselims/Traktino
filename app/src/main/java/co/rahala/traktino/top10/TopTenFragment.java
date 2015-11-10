@@ -51,13 +51,14 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
         userActionsListener = new TopTenPresenter(this);
+        userActionsListener.loadShows(true);
+
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        userActionsListener.loadShows(true);
 
     }
 
@@ -150,11 +151,11 @@ public class TopTenFragment extends Fragment implements TopTenContract.View {
                     .crossFade()
                     .into(viewHolder.imageView);
 
-           /* if (position == mMovies.size() - 2) {
+            if (position == mMovies.size() - 2) {
                 userActionsListener.loadShows(false);
                 Snackbar.make(getView(), "Loading more...", Snackbar.LENGTH_SHORT).show();
                 Log.d(TAG, "load 10 more");
-            }*/
+            }
         }
 
         public void replaceData(List<Movie> movies) {

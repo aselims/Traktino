@@ -28,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        /**
+         * I used the SearchView widget; Another approach would be using custom layout in the toolbar.
+         * I have implemented an AutoComplete TextView based on data from API at */
+
         searchView = new SearchFragment();
 
 
