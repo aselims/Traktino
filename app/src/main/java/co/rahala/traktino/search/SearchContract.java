@@ -15,7 +15,7 @@ public interface SearchContract {
 
         void setProgressIndicator(boolean active);
 
-        void showTen(List<SearchType> searchTypes);
+        void showSearchItems(List<SearchType> searchTypes);
 
         void showError(String msg);
 
@@ -24,9 +24,8 @@ public interface SearchContract {
 
     interface UserActionsListener {
 
-        void loadShows(boolean refresh);
 
-        void loadSearch(String query);
+        void loadSearch(String query, boolean more);
 
 
     }

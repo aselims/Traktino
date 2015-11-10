@@ -32,6 +32,6 @@ public interface TraktService {
             "trakt-api-version: 2"
     })
     @GET("/search?type=movie")
-    Call<List<SearchType>> getSearchResults(@Query("query") String query);
+    Call<List<SearchType>> getSearchResults(@Query("query") String query, @Query("page") String page);
 }
 

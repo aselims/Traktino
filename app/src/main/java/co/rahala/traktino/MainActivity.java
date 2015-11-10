@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 getSupportFragmentManager().popBackStack();
+               // onBackPressed();
                 return true;
             }
 
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if (!TextUtils.isEmpty(newText) && newText.length() > 3) {
                     searchView.setKeyword(newText);
+
                 }
                 return true;
             }

@@ -1,5 +1,7 @@
 package co.rahala.traktino.search;
 
+import android.util.Log;
+
 import java.util.List;
 
 import co.rahala.traktino.api.TraktClient;
@@ -16,36 +18,41 @@ public class SearchPresenter implements SearchContract.UserActionsListener {
 
     private static int currentPage = 1;
     private static int pages;
-
+    private String query;
+    private Call<List<SearchType>> searchCall;
+    List<SearchType> searchTypes;
     private SearchContract.View view;
 
     public SearchPresenter(SearchContract.View view) {
         this.view = view;
     }
 
+
     @Override
-    public void loadShows(boolean refresh) {
-        if (refresh) {
-            currentPage = 1;
-        } else {
+    public void loadSearch(String query, final boolean more) {
+        if(!more){
+            searchCall = TraktClient.getTracktService().getSearchResults(query, "1");
+        }else {
             if (currentPage < pages){
                 currentPage++;
+                searchCall = TraktClient.getTracktService().getSearchResults(query, String.valueOf(currentPage));
+            }else {
+                return;
             }
         }
-
-
-
-    }
-
-    @Override
-    public void loadSearch(String query) {
-
-        Call<List<SearchType>> searchCall = TraktClient.getTracktService().getSearchResults(query);
 
         searchCall.enqueue(new Callback<List<SearchType>>() {
             @Override
             public void onResponse(Response<List<SearchType>> response, Retrofit retrofit) {
-                view.showTen(response.body());
+                Log.d("retrofit_responseCode", String.valueOf(response.code()));
+                pages = Integer.parseInt(response.headers().values("x-pagination-page-count").get(0));
+                currentPage = Integer.parseInt(response.headers().values("x-pagination-page").get(0));
+                if(!more){
+                    searchTypes = response.body();
+                }else {
+                    searchTypes.addAll(response.body());
+                }
+                view.showSearchItems(searchTypes);
             }
 
             @Override

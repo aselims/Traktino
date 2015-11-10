@@ -23,8 +23,6 @@ public interface TopTenContract {
 
         void loadShows(boolean refresh);
 
-        void loadSearch(String query);
-
 
     }
 }

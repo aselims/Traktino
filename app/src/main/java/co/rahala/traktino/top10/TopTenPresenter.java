@@ -79,12 +79,6 @@ public class TopTenPresenter implements TopTenContract.UserActionsListener {
         });
     }
 
-    @Override
-    public void loadSearch(String query) {
-        Call<List<SearchType>> result = TraktClient.getTracktService().getSearchResults(query);
-
-
-    }
 
 
 }
