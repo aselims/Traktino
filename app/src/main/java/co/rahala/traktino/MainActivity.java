@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String TOPTEN_FRAGMENT = "topten";
     SearchContract.View searchView;
 
+    //Todo configuration changes & hide keyboard
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
