@@ -1,5 +1,6 @@
 package co.rahala.traktino.search;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ import co.rahala.traktino.model.SearchType;
 public class SearchFragment extends Fragment implements SearchContract.View {
 
     private static final String TAG = SearchFragment.class.getSimpleName();
+    private boolean keyboardShown;
     SearchContract.UserActionsListener userActionsListener;
     SearchAdapter searchAdapter;
     private String query;
@@ -68,6 +71,19 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         recyclerView.setAdapter(searchAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!keyboardShown) {
+                    hideKeyboard(getActivity());
+                    keyboardShown = true;
+                }
+
+            }
+        });
 
         SwipeRefreshLayout swipeRefreshLayout =
                 (SwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
@@ -109,7 +125,22 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         this.query = s;
         userActionsListener.loadSearch(s, false);
         recyclerView.scrollToPosition(0);
+        keyboardShown = false;
 
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        if (activity == null) {
+            return;
+        }
+        View focus = activity.getCurrentFocus();
+        if (focus != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager)
+                    activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(
+                    focus.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN
+            );
+        }
     }
 
 
