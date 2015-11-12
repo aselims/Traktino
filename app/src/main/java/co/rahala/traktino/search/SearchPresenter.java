@@ -4,6 +4,8 @@ import android.util.Log;
 
 import java.util.List;
 
+import co.rahala.traktino.R;
+import co.rahala.traktino.TraktinoApp;
 import co.rahala.traktino.api.TraktClient;
 import co.rahala.traktino.model.SearchType;
 import retrofit.Call;
@@ -38,7 +40,7 @@ public class SearchPresenter implements SearchContract.UserActionsListener {
                 currentPage++;
                 searchCall = TraktClient.getTracktService().getSearchResults(query, String.valueOf(currentPage));
             }else {
-                view.showMsg("No more results");
+                view.showMsg(TraktinoApp.getApp().getResources().getString(R.string.no_results));
                 view.setProgressIndicator(false);
                 return;
             }
@@ -52,7 +54,7 @@ public class SearchPresenter implements SearchContract.UserActionsListener {
                 currentPage = Integer.parseInt(response.headers().values("x-pagination-page").get(0));
                 if(!more){
                     searchTypes = response.body();
-                    if (searchTypes.size() == 0) view.showMsg("No results!");
+                    if (searchTypes.size() == 0) view.showMsg(TraktinoApp.getApp().getResources().getString(R.string.no_results));
                 }else {
                     searchTypes.addAll(response.body());
                 }

@@ -7,9 +7,10 @@ import android.app.Application;
  */
 public class TraktinoApp extends Application {
 
-    private TraktinoApp app;
+    private static TraktinoApp app;
 
-    public TraktinoApp getApp() {
+
+    public static TraktinoApp getApp() {
         return app;
     }
 

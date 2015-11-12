@@ -6,6 +6,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.rahala.traktino.R;
+import co.rahala.traktino.TraktinoApp;
 import co.rahala.traktino.api.TraktClient;
 import co.rahala.traktino.model.Movie;
 import retrofit.Call;
@@ -47,7 +49,7 @@ public class TopTenPresenter implements TopTenContract.UserActionsListener {
             if (currentPage < pages){
                 currentPage++;
             }else {
-                toptenView.showMsg("No more results...");
+                toptenView.showMsg(TraktinoApp.getApp().getResources().getString(R.string.no_results));
             }
         }
         moviesCall = TraktClient.getTracktService().getMovies(String.valueOf(currentPage));
