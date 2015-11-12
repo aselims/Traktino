@@ -8,7 +8,6 @@ import java.util.List;
 
 import co.rahala.traktino.api.TraktClient;
 import co.rahala.traktino.model.Movie;
-import co.rahala.traktino.model.SearchType;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -47,6 +46,8 @@ public class TopTenPresenter implements TopTenContract.UserActionsListener {
         } else {
             if (currentPage < pages){
                 currentPage++;
+            }else {
+                toptenView.showMsg("No more results...");
             }
         }
         moviesCall = TraktClient.getTracktService().getMovies(String.valueOf(currentPage));
@@ -73,7 +74,7 @@ public class TopTenPresenter implements TopTenContract.UserActionsListener {
 
             @Override
             public void onFailure(Throwable t) {
-                toptenView.showError(t.getMessage());
+                toptenView.showMsg(t.getMessage());
 
             }
         });

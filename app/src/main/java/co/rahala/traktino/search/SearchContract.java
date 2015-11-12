@@ -17,7 +17,7 @@ public interface SearchContract {
 
         void showSearchItems(List<SearchType> searchTypes);
 
-        void showError(String msg);
+        void showMsg(String msg);
 
 
     }
@@ -26,6 +26,8 @@ public interface SearchContract {
 
 
         void loadSearch(String query, boolean more);
+
+        void cancel();
 
 
     }

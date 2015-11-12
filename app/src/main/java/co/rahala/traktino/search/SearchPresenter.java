@@ -30,6 +30,7 @@ public class SearchPresenter implements SearchContract.UserActionsListener {
 
     @Override
     public void loadSearch(String query, final boolean more) {
+        view.setProgressIndicator(true);
         if(!more){
             searchCall = TraktClient.getTracktService().getSearchResults(query, "1");
         }else {
@@ -37,6 +38,8 @@ public class SearchPresenter implements SearchContract.UserActionsListener {
                 currentPage++;
                 searchCall = TraktClient.getTracktService().getSearchResults(query, String.valueOf(currentPage));
             }else {
+                view.showMsg("No more results");
+                view.setProgressIndicator(false);
                 return;
             }
         }
@@ -49,10 +52,12 @@ public class SearchPresenter implements SearchContract.UserActionsListener {
                 currentPage = Integer.parseInt(response.headers().values("x-pagination-page").get(0));
                 if(!more){
                     searchTypes = response.body();
+                    if (searchTypes.size() == 0) view.showMsg("No results!");
                 }else {
                     searchTypes.addAll(response.body());
                 }
                 view.showSearchItems(searchTypes);
+                view.setProgressIndicator(false);
             }
 
             @Override
@@ -62,4 +67,10 @@ public class SearchPresenter implements SearchContract.UserActionsListener {
         });
 
     }
+
+    @Override
+    public void cancel() {
+        searchCall.cancel();
+    }
+
 }

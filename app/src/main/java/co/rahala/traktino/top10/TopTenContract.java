@@ -15,7 +15,7 @@ public interface TopTenContract {
 
         void showTopTen(List<Movie> movies);
 
-        void showError(String msg);
+        void showMsg(String msg);
 
     }
 

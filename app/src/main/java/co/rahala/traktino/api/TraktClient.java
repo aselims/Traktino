@@ -6,6 +6,7 @@ import retrofit.Retrofit;
 
 /**
  * Created by aselims on 07/11/15.
+ *
  */
 public class TraktClient implements TraktContract {
     private static final String BASE_URL = "https://api-v2launch.trakt.tv";
@@ -30,7 +31,7 @@ public class TraktClient implements TraktContract {
     }
 
 
-    //for MVP
+    //for MVP not used
     @Override
     public void fetchTop10() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -39,6 +40,7 @@ public class TraktClient implements TraktContract {
                 .build();
 
         service = retrofit.create(TraktService.class);
+        service.getMovies("1");
 
     }
 

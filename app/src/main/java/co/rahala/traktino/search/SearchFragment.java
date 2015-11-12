@@ -5,11 +5,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,11 +31,12 @@ import co.rahala.traktino.model.SearchType;
 public class SearchFragment extends Fragment implements SearchContract.View {
 
     private static final String TAG = SearchFragment.class.getSimpleName();
-    private boolean keyboardShown;
+    private boolean keyboardHidden;
     SearchContract.UserActionsListener userActionsListener;
     SearchAdapter searchAdapter;
     private String query;
     private RecyclerView recyclerView;
+    private boolean loading;
 
     public SearchFragment() {
     }
@@ -66,7 +65,7 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_top_ten, container, false);
+        View root = inflater.inflate(R.layout.fragment_movies, container, false);
         recyclerView = (RecyclerView) root.findViewById(R.id.movies_list);
         recyclerView.setAdapter(searchAdapter);
         recyclerView.setHasFixedSize(true);
@@ -77,11 +76,10 @@ public class SearchFragment extends Fragment implements SearchContract.View {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if (!keyboardShown) {
+                if (!keyboardHidden) {
                     hideKeyboard(getActivity());
-                    keyboardShown = true;
+                    keyboardHidden = true;
                 }
-
             }
         });
 
@@ -94,12 +92,15 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 
     @Override
     public void setProgressIndicator(final boolean active) {
-
-        if (getView() == null) {
-            return;
+        loading = active;
+        final View pb = getView().findViewById(R.id.progress);
+        if(active) {
+            pb.setVisibility(View.VISIBLE);
         }
+        else {
+            pb.setVisibility(View.GONE);
 
-
+        }
     }
 
     @Override
@@ -108,7 +109,7 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     }
 
     @Override
-    public void showError(String msg) {
+    public void showMsg(String msg) {
         Snackbar.make(getView(), msg, Snackbar.LENGTH_LONG).show();
     }
 
@@ -123,9 +124,14 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     @Override
     public void setKeyword(String s) {
         this.query = s;
-        userActionsListener.loadSearch(s, false);
-        recyclerView.scrollToPosition(0);
-        keyboardShown = false;
+        if(s.equals("") && loading){
+            userActionsListener.cancel();
+        }else{
+            userActionsListener.loadSearch(s, false);
+            recyclerView.scrollToPosition(0);
+            keyboardHidden = false;
+        }
+
 
     }
 
