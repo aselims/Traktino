@@ -28,4 +28,10 @@ android:
     - sys-img-armeabi-v7a-android-23
 
 script:
-    - ./gradlew clean build
+    # - ./gradlew clean build
+    - ./gradlew testDebugUnitTest
+
+cache:
+  directories:
+    - $HOME/.gradle
+    - $HOME/.m2/repository
